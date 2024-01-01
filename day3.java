@@ -1,5 +1,6 @@
 /* Advent of Code, Day 3: Gear Ratios
  * Adrien Abbey, Jan. 2024
+ * Part 1 Solution: 531561
  */
 
 import java.io.File;
@@ -11,7 +12,7 @@ import java.util.Scanner;
 class day3 {
     public static void main(String[] args) throws FileNotFoundException {
         // Enable test code:
-        boolean test = false;
+        boolean test = true;
 
         // Load the input file:
         File inputFile = new File("input.txt");
@@ -113,7 +114,7 @@ class day3 {
             // Then start searching from the current position until no more
             // integers are found:
             int finalColumn = column;
-            for (int i = column + 1; i < maxCol - 1; i++) {
+            for (int i = column + 1; i <= maxCol - 1; i++) {
                 if (Character.isDigit(charMatrix[row][i])) {
                     finalColumn = i;
                 } else {
@@ -164,6 +165,9 @@ class day3 {
                 // Exclude the integer locations in range:
                 if (j >= startingCol && j <= endingCol && i == row) {
                     j = endingCol + 1;
+                    if (j > matrixCols - 1) {
+                        j = matrixCols - 1;
+                    }
                 }
 
                 // Check if the given character is a special character,
