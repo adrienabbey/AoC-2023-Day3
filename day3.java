@@ -55,6 +55,9 @@ class day3 {
             }
         }
 
+        // Track the total sum of valid integers:
+        int totalSum = 0;
+
         // Start scanning for integers:
         for (int i = 0; i < matrixRows; i++) {
             for (int j = 0; j < matrixCols; j++) {
@@ -68,9 +71,33 @@ class day3 {
                     if (test) {
                         System.out.println(" Found integer: row " + i + ", columns " + Arrays.toString(foundInteger));
                     }
+
+                    // Check if the found integer has any adjacent special
+                    // characters:
+                    boolean hasAdjacent = checkAdjacent(inputMatrix, i, foundInteger[0], foundInteger[1], matrixRows,
+                            matrixCols);
+                    if (hasAdjacent) {
+                        // Valid integer found. Turn it into a usable integer:
+                        String intString = "";
+                        for (int k = foundInteger[0]; k <= foundInteger[1]; k++) {
+                            intString += inputMatrix[i][k];
+                        }
+                        int integerFound = Integer.valueOf(intString);
+
+                        // Add the found integer to the running sum:
+                        totalSum += integerFound;
+
+                        // Test code:
+                        if (test) {
+                            System.out.println(" - Adjacent special character found!");
+                        }
+                    }
                 }
             }
         }
+
+        // Print the result:
+        System.out.println("Total sum of the given input is: " + totalSum);
 
         // Close the scanner before exiting:
         inputScanner.close();
@@ -86,7 +113,7 @@ class day3 {
             // Then start searching from the current position until no more
             // integers are found:
             int finalColumn = column;
-            for (int i = column + 1; i <= maxCol; i++) {
+            for (int i = column + 1; i < maxCol - 1; i++) {
                 if (Character.isDigit(charMatrix[row][i])) {
                     finalColumn = i;
                 } else {
@@ -103,5 +130,52 @@ class day3 {
             int returnArray[] = { -1, -1 };
             return returnArray;
         }
+    }
+
+    public static boolean checkAdjacent(char[][] charMatrix, int row, int startingCol, int endingCol, int matrixRows,
+            int matrixCols) {
+        // Given the row and column of the start and end of a number in the
+        // given character matrix, check adjacent locations for any special
+        // characters. If one exists, return 'true', otherwise return 'false'.
+
+        // Determine the start and end rows to check:
+        int startRow = row - 1;
+        int endRow = row + 1;
+        if (startRow < 0) {
+            startRow = 0;
+        }
+        if (endRow > matrixRows - 1) {
+            endRow = matrixRows - 1;
+        }
+
+        // Determine start and end columns:
+        int startCol = startingCol - 1;
+        int endCol = endingCol + 1;
+        if (startCol < 0) {
+            startCol = 0;
+        }
+        if (endCol > matrixCols - 1) {
+            endCol = matrixCols - 1;
+        }
+
+        // Check each adjacent row and column for special characters:
+        for (int i = startRow; i <= endRow; i++) {
+            for (int j = startCol; j <= endCol; j++) {
+                // Exclude the integer locations in range:
+                if (j >= startingCol && j <= endingCol && i == row) {
+                    j = endingCol + 1;
+                }
+
+                // Check if the given character is a special character,
+                // excluding '.':
+                if (charMatrix[i][j] != '.' && !Character.isDigit(charMatrix[i][j])) {
+                    // An adjacent special character has been found:
+                    return true;
+                }
+            }
+        }
+
+        // No adjacent special characters found, return false:
+        return false;
     }
 }
