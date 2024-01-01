@@ -10,6 +10,9 @@ import java.util.Scanner;
 
 class day3 {
     public static void main(String[] args) throws FileNotFoundException {
+        // Enable test code:
+        boolean test = true;
+
         // Load the input file:
         File inputFile = new File("example-input.txt");
         Scanner inputScanner = new Scanner(inputFile);
@@ -39,16 +42,18 @@ class day3 {
             }
         }
 
-        // FIXME: Test code:
-        // System.out.println(" Input rows: " + matrixRows);
-        // System.out.println(" Input columns: " + matrixCols);
-        // for (int i = 0; i < matrixRows; i++) {
-        // String line = new String();
-        // for (int j = 0; j < matrixCols; j++) {
-        // line = line + "" + inputMatrix[i][j];
-        // }
-        // System.out.println(line);
-        // }
+        // Test code:
+        if (test) {
+            System.out.println(" Input rows: " + matrixRows);
+            System.out.println(" Input columns: " + matrixCols);
+            for (int i = 0; i < matrixRows; i++) {
+                String line = new String();
+                for (int j = 0; j < matrixCols; j++) {
+                    line = line + "" + inputMatrix[i][j];
+                }
+                System.out.println(line);
+            }
+        }
 
         // Start scanning for integers:
         for (int i = 0; i < matrixRows; i++) {
@@ -59,8 +64,10 @@ class day3 {
                     // Integer found. Skip to next column for testing:
                     j = foundInteger[1] + 1;
 
-                    // FIXME: Print it:
-                    System.out.println(" Found integer: row " + i + ", columns " + Arrays.toString(foundInteger));
+                    // Test code:
+                    if (test) {
+                        System.out.println(" Found integer: row " + i + ", columns " + Arrays.toString(foundInteger));
+                    }
                 }
             }
         }
