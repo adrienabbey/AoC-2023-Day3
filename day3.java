@@ -10,7 +10,7 @@ import java.util.Scanner;
 class day3 {
     public static void main(String[] args) throws FileNotFoundException {
         // Load the input file:
-        File inputFile = new File("input.txt");
+        File inputFile = new File("example-input.txt");
         Scanner inputScanner = new Scanner(inputFile);
 
         // It's probably easiest to work with the input as a character matrix.
