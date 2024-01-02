@@ -10,12 +10,15 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 class day3 {
+    // Global Variables:
+    public static String inputFileName = "example-input.txt";
+    public static boolean test = true; // Enable test mode.
+    public static boolean partTwo = true; // Toggle between Part One and Part Two code.
+
     public static void main(String[] args) throws FileNotFoundException {
-        // Enable test code:
-        boolean test = true;
 
         // Load the input file:
-        File inputFile = new File("input.txt");
+        File inputFile = new File(inputFileName);
         Scanner inputScanner = new Scanner(inputFile);
 
         // It's probably easiest to work with the input as a character matrix.
@@ -56,49 +59,73 @@ class day3 {
             }
         }
 
-        // Track the total sum of valid integers:
-        int totalSum = 0;
+        if (!partTwo) {
+            // Use Part One code.
 
-        // Start scanning for integers:
-        for (int i = 0; i < matrixRows; i++) {
-            for (int j = 0; j < matrixCols; j++) {
-                int[] foundInteger = findNumber(inputMatrix, i, j, matrixRows, matrixCols);
-                int[] notFoundMatrix = { -1, -1 };
-                if (!Arrays.equals(foundInteger, notFoundMatrix)) {
-                    // Integer found. Skip to next column for testing:
-                    j = foundInteger[1] + 1;
+            // Track the total sum of valid integers:
+            int totalSum = 0;
 
-                    // Test code:
-                    if (test) {
-                        System.out.println(" Found integer: row " + i + ", columns " + Arrays.toString(foundInteger));
-                    }
-
-                    // Check if the found integer has any adjacent special
-                    // characters:
-                    boolean hasAdjacent = checkAdjacent(inputMatrix, i, foundInteger[0], foundInteger[1], matrixRows,
-                            matrixCols);
-                    if (hasAdjacent) {
-                        // Valid integer found. Turn it into a usable integer:
-                        String intString = "";
-                        for (int k = foundInteger[0]; k <= foundInteger[1]; k++) {
-                            intString += inputMatrix[i][k];
-                        }
-                        int integerFound = Integer.valueOf(intString);
-
-                        // Add the found integer to the running sum:
-                        totalSum += integerFound;
+            // Start scanning for integers:
+            for (int i = 0; i < matrixRows; i++) {
+                for (int j = 0; j < matrixCols; j++) {
+                    int[] foundInteger = findNumber(inputMatrix, i, j, matrixRows, matrixCols);
+                    int[] notFoundMatrix = { -1, -1 };
+                    if (!Arrays.equals(foundInteger, notFoundMatrix)) {
+                        // Integer found. Skip to next column for testing:
+                        j = foundInteger[1] + 1;
 
                         // Test code:
                         if (test) {
-                            System.out.println(" - Adjacent special character found!");
+                            System.out
+                                    .println(" Found integer: row " + i + ", columns " + Arrays.toString(foundInteger));
+                        }
+
+                        // Check if the found integer has any adjacent special
+                        // characters:
+                        boolean hasAdjacent = checkAdjacent(inputMatrix, i, foundInteger[0], foundInteger[1],
+                                matrixRows,
+                                matrixCols);
+                        if (hasAdjacent) {
+                            // Valid integer found. Turn it into a usable integer:
+                            String intString = "";
+                            for (int k = foundInteger[0]; k <= foundInteger[1]; k++) {
+                                intString += inputMatrix[i][k];
+                            }
+                            int integerFound = Integer.valueOf(intString);
+
+                            // Add the found integer to the running sum:
+                            totalSum += integerFound;
+
+                            // Test code:
+                            if (test) {
+                                System.out.println(" - Adjacent special character found!");
+                            }
                         }
                     }
                 }
             }
-        }
 
-        // Print the result:
-        System.out.println("Total sum of the given input is: " + totalSum);
+            // Print the result:
+            System.out.println("Total sum of the given input is: " + totalSum);
+        } else {
+            // Use Part Two code.
+
+            // Track the total sum of all valid gear ratios:
+            int totalSum = 0;
+
+            // Search for gears:
+            for (int i = 0; i < matrixRows; i++) {
+                for (int j = 0; j < matrixCols; j++) {
+                    if (inputMatrix[i][j] == '*') {
+                        // Add the gear ratio to the total sum, if any:
+                        totalSum += ratioCheck(inputMatrix, i, j, matrixRows, matrixCols);
+                    }
+                }
+            }
+
+            // Print the result:
+            System.out.println(" Total sum of all gear ratios is: " + totalSum);
+        }
 
         // Close the scanner before exiting:
         inputScanner.close();
@@ -181,5 +208,128 @@ class day3 {
 
         // No adjacent special characters found, return false:
         return false;
+    }
+
+    public static int ratioCheck(char[][] inputMatrix, int row, int column, int matrixRows, int matrixCols) {
+        // Checks each adjacent location for an integer. If two adjacent
+        // integers are located, it returns the product of those integers.
+        // Otherwise, it returns zero.
+
+        // Integers can be to the left, right, above, below, or diagonally.
+        // Integers above or below exclude the possibility of diagonal integers.
+
+        // Track the number of adjacent integers:
+        int adjacentCount = 0;
+        ArrayList<Integer> adjacentIntegers = new ArrayList<Integer>();
+
+        // Check for adjacent integers:
+        if (column - 1 >= 0 && Character.isDigit(inputMatrix[row][column - 1])) {
+            adjacentCount += 1;
+            adjacentIntegers.add(getInteger(inputMatrix, row, column - 1, matrixRows, matrixCols));
+        }
+        if (column + 1 < matrixCols && Character.isDigit(inputMatrix[row][column + 1])) {
+            adjacentCount += 1;
+            adjacentIntegers.add(getInteger(inputMatrix, row, column + 1, matrixRows, matrixCols));
+        }
+        if (row - 1 >= 0 && Character.isDigit(inputMatrix[row - 1][column])) {
+            adjacentCount += 1;
+            adjacentIntegers.add(getInteger(inputMatrix, row - 1, column, matrixRows, matrixCols));
+        } else {
+            // No digit above, check diagonals above:
+            if (row - 1 >= 0 && column - 1 >= 0 && Character.isDigit(inputMatrix[row - 1][column - 1])) {
+                adjacentCount += 1;
+                adjacentIntegers.add(getInteger(inputMatrix, row - 1, column - 1, matrixRows, matrixCols));
+            }
+            if (row - 1 >= 0 && column + 1 < matrixCols && Character.isDigit(inputMatrix[row - 1][column + 1])) {
+                adjacentCount += 1;
+                adjacentIntegers.add(getInteger(inputMatrix, row - 1, column + 1, matrixRows, matrixCols));
+            }
+        }
+        if (row + 1 < matrixRows && Character.isDigit(inputMatrix[row + 1][column])) {
+            adjacentIntegers.add(getInteger(inputMatrix, row + 1, column, matrixRows, matrixCols));
+            adjacentCount += 1;
+        } else {
+            // No digits below, check diagonals below:
+            if (row + 1 < matrixRows && column - 1 >= 0 && Character.isDigit(inputMatrix[row + 1][column - 1])) {
+                adjacentCount += 1;
+                adjacentIntegers.add(getInteger(inputMatrix, row + 1, column - 1, matrixRows, matrixCols));
+            }
+            if (row + 1 < matrixRows && column + 1 < matrixCols
+                    && Character.isDigit(inputMatrix[row + 1][column + 1])) {
+                adjacentCount += 1;
+                adjacentIntegers.add(getInteger(inputMatrix, row + 1, column + 1, matrixRows, matrixCols));
+            }
+        }
+
+        // If ONLY two adjcent integers were found:
+        if (adjacentCount == 2) {
+            // Find the product of those integers:
+            int gearRatio = adjacentIntegers.get(0) * adjacentIntegers.get(1);
+
+            // Test code:
+            if (test) {
+                System.out.println(" Gear ratio found: " + gearRatio);
+            }
+
+            // Return the gear ratio:
+            return gearRatio;
+        } else {
+            // Test code;
+            if (test) {
+                System.out.println(" No gear ratio found.");
+            }
+            // Otherwise return zero:
+            return 0;
+        }
+    }
+
+    public static int getInteger(char[][] inputMatrix, int row, int column, int matrixRows, int matrixCols) {
+        // Find and return the full integer included in the given location.
+        // Assumes a valid input.
+
+        // Track the start and end values:
+        int startingCol = column;
+        int endingCol = column;
+
+        // Start tracking to the left:
+        for (int i = column - 1; i >= 0; i--) {
+            if (Character.isDigit(inputMatrix[row][i])) {
+                startingCol -= 1;
+            } else {
+                break;
+            }
+        }
+
+        // Start tracking to the right:
+        for (int i = column + 1; i < matrixCols; i++) {
+            if (Character.isDigit(inputMatrix[row][i])) {
+                endingCol += 1;
+            } else {
+                break;
+            }
+        }
+
+        // Start collecting integers:
+        ArrayList<Integer> integers = new ArrayList<Integer>();
+        for (int i = startingCol; i <= endingCol; i++) {
+            integers.add(Character.getNumericValue(inputMatrix[row][i]));
+        }
+
+        // Concactenate the collected integers into a string:
+        String intString = "";
+        for (int i : integers) {
+            intString = intString + "" + i;
+        }
+
+        // Convert the integer string into a proper integer:
+        int foundInteger = Integer.valueOf(intString);
+
+        // Test code:
+        if (test) {
+            System.out.println(" Found integer: " + foundInteger);
+        }
+
+        // Return the found integer:
+        return foundInteger;
     }
 }
