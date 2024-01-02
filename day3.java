@@ -1,6 +1,7 @@
 /* Advent of Code, Day 3: Gear Ratios
  * Adrien Abbey, Jan. 2024
  * Part 1 Solution: 531561
+ * Part 2 Solution: 83279367
  */
 
 import java.io.File;
@@ -11,8 +12,8 @@ import java.util.Scanner;
 
 class day3 {
     // Global Variables:
-    public static String inputFileName = "example-input.txt";
-    public static boolean test = true; // Enable test mode.
+    public static String inputFileName = "input.txt";
+    public static boolean test = false; // Enable test mode.
     public static boolean partTwo = true; // Toggle between Part One and Part Two code.
 
     public static void main(String[] args) throws FileNotFoundException {
